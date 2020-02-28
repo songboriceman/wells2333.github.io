@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="SonarQube代码质量管理平台安装和分析maven项目"><meta name="keywords" content="SonarQube, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2019/01/13/SonarQube代码质量管理平台安装和分析maven项目/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"appid":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","appkey":"C6cI5nHo4mM7bfXQOfS8fC9q","comment":true,"timer":true},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>SonarQube代码质量管理平台安装和分析maven项目 - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">SonarQube代码质量管理平台安装和分析maven项目
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-01-13
+        </span><span class="post-category">
+            <a href="/categories/后端/">后端</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境准备"><span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装sonarqube："><span class="toc-text">安装sonarqube：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装sonar-scanner"><span class="toc-text">安装sonar-scanner</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li></ol></li></ol>
+    </div>
+  </div><div class="post-content"><p>Sonarqube是一个开源的代码质量管理平台，可以扫描代码中的明显错误和潜在bug，本次使用sonarqube7.5扫描新版在线考试系统<a href="https://gitee.com/wells2333/online-exam.git" target="_blank" rel="noopener">online-exam</a>的代码</p>
+<a id="more"></a>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>jdk1.8<br>MySQL5.7 （&gt;=5.6 &amp;&amp; &lt; 8.0）<br>sonarqube：7.5<br>sonar-scanner：3.3.0.1492</p>
+<h2 id="安装sonarqube："><a href="#安装sonarqube：" class="headerlink" title="安装sonarqube："></a>安装sonarqube：</h2><p>下载地址：<a href="https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.5.zip" target="_blank" rel="noopener">https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.5.zip</a></p>
+<ol>
+<li>下载sonarqube-7.5.zip后，解压打开bin目录，打开对应系统的StartSonar，如windows64位的是bin\windows-x86-64\StartSonar.bat</li>
+<li>浏览器访问：<a href="http://localhost:9000，能访问说明安装成功" target="_blank" rel="noopener">http://localhost:9000，能访问说明安装成功</a></li>
+</ol>
+<p>配置：</p>
+<ol>
+<li>新建一个名为sonar的数据库</li>
+<li>打开sonarqube-7.5\conf\sonar.properties</li>
+<li>配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sonar.jdbc.url=jdbc:mysql://127.0.0.1:3306/sonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance&amp;useSSL=false</span><br><span class="line">sonar.jdbc.username=root</span><br><span class="line">sonar.jdbc.password=</span><br><span class="line">sonar.sorceEncoding=UTF-8</span><br><span class="line">sonar.login=admin</span><br><span class="line">sonar.password=admin</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>重启sonar，再次访问<a href="http://localhost:9000，会稍微有点慢，因为要初始化数据库信息" target="_blank" rel="noopener">http://localhost:9000，会稍微有点慢，因为要初始化数据库信息</a></li>
+<li>汉化：在安装插件plugin的界面搜索chinese，并安装，重启即可。</li>
+</ol>
+<h2 id="安装sonar-scanner"><a href="#安装sonar-scanner" class="headerlink" title="安装sonar-scanner"></a>安装sonar-scanner</h2><p>下载地址：<a href="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-windows.zip" target="_blank" rel="noopener">https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-windows.zip</a></p>
+<ol>
+<li>下载完成后，解压，修改\sonar-scanner-3.3.0.1492-windows\conf\sonar-scanner.properties</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sonar.jdbc.url=jdbc:mysql://127.0.0.1:3306/qjfsonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance</span><br><span class="line">sonar.jdbc.username=root</span><br><span class="line">sonar.jdbc.password=</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><p>配置环境变量</p>
+<p> 新建系统环境变量：SONAR_RUNNER_HOME，值：C:\software\sonarqube\sonar-scanner\sonar-scanner-3.3.0.1492-windows</p>
+<p> path变量添加：%SONAR_RUNNER_HOME%\bin</p>
+</li>
+<li><p>验证</p>
+<p> 打开命令窗口，输入sonar-scanner -v</p>
+<p> 若输出sonar-scanner版本号则配置成功</p>
+</li>
+</ol>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>本次分析的是<a href="https://gitee.com/wells2333/online-exam.git" target="_blank" rel="noopener">online-exam</a>，是maven项目，需要配置maven的setting文件和项目的pom</p>
+<ol>
+<li>首先在项目的根目录新建sonar-project.properties</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sonar.projectKey=online-exam</span><br><span class="line">sonar.projectName=online-exam</span><br><span class="line">sonar.projectVersion=1.0</span><br><span class="line">sonar.sources=</span><br><span class="line">sonar.binaries=bin</span><br><span class="line">sonar.language=java</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>配置maven的setting文件</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;settings&gt;</span><br><span class="line">    &lt;pluginGroups&gt;</span><br><span class="line">        &lt;pluginGroup&gt;org.sonarsource.scanner.maven&lt;/pluginGroup&gt;</span><br><span class="line">    &lt;/pluginGroups&gt;</span><br><span class="line">    &lt;profiles&gt;</span><br><span class="line">        &lt;profile&gt;</span><br><span class="line">            &lt;id&gt;sonar&lt;/id&gt;</span><br><span class="line">            &lt;activation&gt;</span><br><span class="line">                &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;</span><br><span class="line">            &lt;/activation&gt;</span><br><span class="line">            &lt;properties&gt;</span><br><span class="line">                &lt;!-- 配置 Sonar Host地址 --&gt;</span><br><span class="line">                &lt;sonar.host.url&gt;</span><br><span class="line">                  http://localhost:9000</span><br><span class="line">                &lt;/sonar.host.url&gt;</span><br><span class="line">            &lt;/properties&gt;</span><br><span class="line">        &lt;/profile&gt;</span><br><span class="line">     &lt;/profiles&gt;</span><br><span class="line">&lt;/settings&gt;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>修改项目的pom</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">  &lt;plugins&gt;</span><br><span class="line">    &lt;plugin&gt;</span><br><span class="line">      &lt;groupId&gt;org.sonarsource.scanner.maven&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;sonar-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;3.3.0.603&lt;/version&gt;</span><br><span class="line">    &lt;/plugin&gt;</span><br><span class="line">  &lt;/plugins&gt;</span><br><span class="line">&lt;/build&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><ol>
+<li>在项目根目录执行命令，开始分析</li>
+</ol>
+<p>mvn clean install org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar</p>
+<ol start="2">
+<li>登录sonar查看分析结果</li>
+</ol>
+<p><img src="/images/SonarQube代码质量管理平台安装和分析maven项目/sonar.png" alt="image"></p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2019/01/13/SonarQube代码质量管理平台安装和分析maven项目/">http://ehedgehog.com/2019/01/13/SonarQube代码质量管理平台安装和分析maven项目/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/SonarQube/">SonarQube</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/01/19/使用vultr搭建自己的vpn/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">使用vultr搭建自己的vpn</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/11/03/微服务下的权限控制/">
+        <span class="next-text nav-default">微服务下的权限控制</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

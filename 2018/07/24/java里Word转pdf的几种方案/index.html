@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="java里实现Word转PDF的几种方案"><meta name="keywords" content="java, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2018/07/24/java里Word转pdf的几种方案/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"appid":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","appkey":"C6cI5nHo4mM7bfXQOfS8fC9q","comment":true,"timer":true},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>java里实现Word转PDF的几种方案 - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">java里实现Word转PDF的几种方案
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-07-24
+        </span><span class="post-category">
+            <a href="/categories/后端/">后端</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、libreOffice"><span class="toc-text">一、libreOffice</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#调用方式："><span class="toc-text">调用方式：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、docx4j"><span class="toc-text">二、docx4j</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、documents4j"><span class="toc-text">三、documents4j</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、jacob"><span class="toc-text">四、jacob</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、pageOffice"><span class="toc-text">五、pageOffice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>介绍Java里实现Word转PDF的几种方案，分别是libreoffice、docx4j、documents4j、jacob、pageOffice。</p>
+<a id="more"></a>
+<h3 id="一、libreOffice"><a href="#一、libreOffice" class="headerlink" title="一、libreOffice"></a>一、libreOffice</h3><p>与openOffice类似，但比openOffice稳定。</p>
+<p>优点：样式稳定</p>
+<p>缺点：性能较差</p>
+<h4 id="调用方式："><a href="#调用方式：" class="headerlink" title="调用方式："></a>调用方式：</h4><ol>
+<li>windows：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">docToPdf</span><span class="params">(String docPath)</span> </span>&#123;</span><br><span class="line">        String libreOfficePath = Global.getConfig(<span class="string">"libreOffice"</span>);</span><br><span class="line">        <span class="comment">// 自动补全路径</span></span><br><span class="line">        <span class="keyword">if</span> (!libreOfficePath.endsWith(File.separator))</span><br><span class="line">            libreOfficePath += File.separator;</span><br><span class="line">        <span class="comment">//soffice --convert-to pdf  -outdir E:/test.docx</span></span><br><span class="line">        String command = libreOfficePath + <span class="string">"soffice --convert-to pdf  -outdir "</span> + <span class="keyword">new</span> File(docPath).getParent() + <span class="string">" "</span> + docPath;</span><br><span class="line">        <span class="comment">// 执行转换</span></span><br><span class="line">        String result = commandExecutor.executeCommand(command, EXECUTE_COMMAND_TIME_OUT).getExecuteOut();</span><br><span class="line">        logger.info(result);</span><br><span class="line">        docPath = docPath.replace(<span class="string">".docx"</span>, <span class="string">".pdf"</span>);</span><br><span class="line">        <span class="keyword">return</span> docPath;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>linux:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">docToPdf</span><span class="params">(String docPath)</span> </span>&#123;</span><br><span class="line">        String libreOfficePath = Global.getConfig(<span class="string">"libreOffice"</span>);</span><br><span class="line">        String command = libreOfficePath + <span class="string">" --invisible --convert-to pdf:writer_pdf_Export --outdir "</span></span><br><span class="line">                + <span class="keyword">new</span> File(docPath).getParent() + <span class="string">" "</span> + docPath;</span><br><span class="line">        <span class="comment">// 执行转换</span></span><br><span class="line">        String result = commandExecutor.executeCommand(command, EXECUTE_COMMAND_TIME_OUT).getExecuteOut();</span><br><span class="line">        logger.debug(<span class="string">"转换结果：&#123;&#125;"</span>, result);</span><br><span class="line">        docPath = docPath.replace(<span class="string">".docx"</span>, <span class="string">".pdf"</span>);</span><br><span class="line">        <span class="keyword">return</span> docPath;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="二、docx4j"><a href="#二、docx4j" class="headerlink" title="二、docx4j"></a>二、docx4j</h3><p>优点：性能比libreoffice稍好</p>
+<p>缺点：性能差、容易出现PDF和Word样式不一致问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Mapper fontMapper = <span class="keyword">new</span> IdentityPlusMapper();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化字体</span></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    fontMapper.put(<span class="string">"隶书"</span>, PhysicalFonts.get(<span class="string">"LiSu"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"宋体"</span>, PhysicalFonts.get(<span class="string">"SimSun"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"微软雅黑"</span>, PhysicalFonts.get(<span class="string">"Microsoft Yahei"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"黑体"</span>, PhysicalFonts.get(<span class="string">"SimHei"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"楷体"</span>, PhysicalFonts.get(<span class="string">"KaiTi"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"新宋体"</span>, PhysicalFonts.get(<span class="string">"NSimSun"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"华文行楷"</span>, PhysicalFonts.get(<span class="string">"STXingkai"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"华文仿宋"</span>, PhysicalFonts.get(<span class="string">"STFangsong"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"宋体扩展"</span>, PhysicalFonts.get(<span class="string">"simsun-extB"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"仿宋"</span>, PhysicalFonts.get(<span class="string">"FangSong"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"仿宋_GB2312"</span>, PhysicalFonts.get(<span class="string">"FangSong_GB2312"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"幼圆"</span>, PhysicalFonts.get(<span class="string">"YouYuan"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"华文宋体"</span>, PhysicalFonts.get(<span class="string">"STSong"</span>));</span><br><span class="line">    fontMapper.put(<span class="string">"华文中宋"</span>, PhysicalFonts.get(<span class="string">"STZhongsong"</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">docxToPdf</span><span class="params">(String docxPath)</span> </span>&#123;</span><br><span class="line">    OutputStream outputStream = <span class="keyword">null</span>;</span><br><span class="line">    String pdfPath = docxPath.replace(<span class="string">".docx"</span>, <span class="string">".pdf"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        WordprocessingMLPackage mlPackage = WordprocessingMLPackage.load(<span class="keyword">new</span> File(docxPath));</span><br><span class="line">        mlPackage.setFontMapper(fontMapper);</span><br><span class="line">        outputStream = <span class="keyword">new</span> BufferedOutputStream(<span class="keyword">new</span> FileOutputStream(pdfPath));</span><br><span class="line">        FOSettings foSettings = Docx4J.createFOSettings();</span><br><span class="line">        foSettings.setWmlPackage(mlPackage);</span><br><span class="line">        Docx4J.toFO(foSettings, outputStream, Docx4J.FLAG_EXPORT_PREFER_XSL);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        logger.error(<span class="string">"docx转PDF失败！"</span>, ex);</span><br><span class="line">        pdfPath = <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        IOUtils.closeQuietly(outputStream);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pdfPath;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="三、documents4j"><a href="#三、documents4j" class="headerlink" title="三、documents4j"></a>三、documents4j</h3><p>优点：样式稳定、性能高</p>
+<p>缺点：要依赖本地的office软件做转换，在linux下要调远程服务来转换</p>
+<p>GitHub：<a href="https://github.com/documents4j" target="_blank" rel="noopener">documents4j</a></p>
+<p>调用方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">docxToPdf</span><span class="params">(String docxPath)</span> </span>&#123;</span><br><span class="line">        String pdfPath = docxPath.replace(<span class="string">".docx"</span>, <span class="string">".pdf"</span>);</span><br><span class="line">        <span class="keyword">boolean</span> success = getConverter()</span><br><span class="line">                .convert(<span class="keyword">new</span> File(docxPath))</span><br><span class="line">                .as(DocumentType.DOCX)</span><br><span class="line">                .to(<span class="keyword">new</span> File(pdfPath))</span><br><span class="line">                .as(DocumentType.PDF).execute();</span><br><span class="line">        logger.debug(<span class="string">"Word转换PDF结果：&#123;&#125;"</span>, success);</span><br><span class="line">        <span class="keyword">return</span> success ? pdfPath : <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IConverter <span class="title">getConverter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (converter == <span class="keyword">null</span>) &#123;</span><br><span class="line">        String conversionServerUrl = Global.getConfig(<span class="string">"conversionServer.url"</span>);</span><br><span class="line">        <span class="comment">// 如果配置了远程转换服务器地址，则初始化远程转换对象</span></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(conversionServerUrl)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!conversionServerUrl.startsWith(<span class="string">"http"</span>))</span><br><span class="line">                conversionServerUrl = <span class="string">"http://"</span> + conversionServerUrl;</span><br><span class="line">            converter = RemoteConverter.builder()</span><br><span class="line">                    .baseFolder(<span class="keyword">new</span> File(POfficeConstants.TEMP_SAVE_PATH))</span><br><span class="line">                    .workerPool(<span class="number">20</span>, <span class="number">25</span>, <span class="number">2</span>, TimeUnit.SECONDS)</span><br><span class="line">                    .requestTimeout(<span class="number">120</span>, TimeUnit.SECONDS)</span><br><span class="line">                    .baseUri(conversionServerUrl)</span><br><span class="line">                    .build();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 创建本地转换对象</span></span><br><span class="line">            converter = LocalConverter.builder()</span><br><span class="line">                    .baseFolder(<span class="keyword">new</span> File(POfficeConstants.TEMP_SAVE_PATH))</span><br><span class="line">                    .workerPool(<span class="number">20</span>, <span class="number">25</span>, <span class="number">2</span>, TimeUnit.SECONDS)</span><br><span class="line">                    .processTimeout(<span class="number">2L</span>, TimeUnit.MINUTES)</span><br><span class="line">                    .build();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> converter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四、jacob"><a href="#四、jacob" class="headerlink" title="四、jacob"></a>四、jacob</h3><p>优点：样式稳定、性能高</p>
+<p>缺点：只支持window系统且服务器要安装office软件，并发量大时会有瓶颈</p>
+<p>可以单独部署一台windows服务器，提供文档转换服务</p>
+<p>基于spring boot的转换服务器例子：<a href="https://gitee.com/wells2333/converter.git" target="_blank" rel="noopener">converter</a></p>
+<h3 id="五、pageOffice"><a href="#五、pageOffice" class="headerlink" title="五、pageOffice"></a>五、pageOffice</h3><p>优点：兼容性好，性能高</p>
+<p>缺点：收费，客户端需要安装office软件和卓正控件，偶尔会出现兼容性问题</p>
+<p>具体实现是客户的浏览器利用卓正控件打开Word文档，调用卓正提供的js接口，将文档保存为PDF，上传到服务器，服务器将上传的PDF做处理（如添加水印等）后提供给客户下载。</p>
+<p>因为Word转PDF的过程是在客户的电脑上实现的，所以服务器基本没什么压力，但客户的电脑需要安装office软件和卓正控件。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>实际应用中，前面四种方案都用过，踩了不少坑，比如libreoffice，要考虑生产环境低内核版本问题，docx4j的转换后样式错乱问题，documents4j不稳定，会出现进程阻塞，jacob只支持window服务器</p>
+<p>目前实际采用的是卓正的pageOffice。</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2018/07/24/java里Word转pdf的几种方案/">http://ehedgehog.com/2018/07/24/java里Word转pdf的几种方案/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/java/">java</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2018/08/19/xxl-job源码研究之--路由算法及实现/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">xxl-job源码研究之--路由算法及实现</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/06/28/关于quartz/">
+        <span class="next-text nav-default">关于quartz</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

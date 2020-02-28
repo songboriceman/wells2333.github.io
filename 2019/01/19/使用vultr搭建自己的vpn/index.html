@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="使用vultr搭建自己的vpn"><meta name="keywords" content="后端, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2019/01/19/使用vultr搭建自己的vpn/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"appid":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","appkey":"C6cI5nHo4mM7bfXQOfS8fC9q","comment":true,"timer":true},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>使用vultr搭建自己的vpn - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">使用vultr搭建自己的vpn
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2019-01-19
+        </span><span class="post-category">
+            <a href="/categories/后端/">后端</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、部署服务器"><span class="toc-text">一、部署服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、安装shadowsocksR"><span class="toc-text">二、安装shadowsocksR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、安装bbr加速"><span class="toc-text">三、安装bbr加速</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>手摸手教你在vps搭建属于自己的vpn教程，开始科学上网（利用vultr，Google, 看youtube1080p无压力）</p>
+<a id="more"></a>
+<p>步骤大致是到<a href="https://www.vultr.com/" target="_blank" rel="noopener">vultr</a>注册一个账号，部署一台vps，在vps上安装shadowsocksR，下载<a href="https://github.com/shadowsocks/shadowsocks-windows/releases/" target="_blank" rel="noopener">ssr客户端</a>使用</p>
+<h3 id="一、部署服务器"><a href="#一、部署服务器" class="headerlink" title="一、部署服务器"></a>一、部署服务器</h3><p>注册<a href="https://www.vultr.com/" target="_blank" rel="noopener">vultr</a>账号，新增一台server，serverLocation随意，我选的是Atlanta，serverType选CentOS 6x64，ServerSize选3.5美刀，因为2.5美刀不支持ipv4，其它默认</p>
+<p><img src="/images/使用vultr搭建自己的vpn/serverLocation.png" alt="image"></p>
+<p><img src="/images/使用vultr搭建自己的vpn/serverType.png" alt="image"></p>
+<p><img src="/images/使用vultr搭建自己的vpn/deploy.png" alt="image"></p>
+<h3 id="二、安装shadowsocksR"><a href="#二、安装shadowsocksR" class="headerlink" title="二、安装shadowsocksR"></a>二、安装shadowsocksR</h3><p>部署成功后，服务器的IP、账号和密码：</p>
+<p><img src="/images/使用vultr搭建自己的vpn/manager.png" alt="image"></p>
+<p>打开Xshell，用上面的root账号登录服务器，依次执行下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh </span><br><span class="line"></span><br><span class="line">chmod +x shadowsocksR.sh </span><br><span class="line"></span><br><span class="line">./shadowsocksR.sh 2&gt;&amp;1 | tee shadowsocksR.log</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后输入访问的密码、端口，其他默认</p>
+<p>这时会出现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Congratulations, ShadowsocksR server install completed!</span><br><span class="line">Your Server IP :your_server_ip</span><br><span class="line">Your Server Port :your_server_port</span><br><span class="line">Your Password :your_password</span><br><span class="line">Your Protocol :your_protocol</span><br><span class="line">Your obfs :your_obfs</span><br><span class="line">Your Encryption Method:your_encryption_method</span><br><span class="line"></span><br><span class="line">Welcome to visit:https://shadowsocks.be/9.html</span><br><span class="line">Enjoy it!</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="/images/使用vultr搭建自己的vpn/congratulations.png" alt="image"></p>
+<p>安装完成后即已后台启动 ShadowsocksR，可以下载<a href="https://github.com/shadowsocks/shadowsocks-windows/releases/" target="_blank" rel="noopener">ssr客户端</a>，填入服务器的IP端口科学上网了</p>
+<h3 id="三、安装bbr加速"><a href="#三、安装bbr加速" class="headerlink" title="三、安装bbr加速"></a>三、安装bbr加速</h3><p>这时可能会出现网络慢的情况，可以安装bbr加速，执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">yum -y install wget</span><br><span class="line"></span><br><span class="line">wget --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh</span><br><span class="line"></span><br><span class="line">chmod +x bbr.sh</span><br><span class="line"></span><br><span class="line">./bbr.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>PS：文章仅供参考和交流，如使用在商业行为上，则使用者对任何自主决定的行为负责！</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2019/01/19/使用vultr搭建自己的vpn/">http://ehedgehog.com/2019/01/19/使用vultr搭建自己的vpn/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/后端/">后端</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2019/03/23/微服务架构下的安全设计方案/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">微服务架构下的安全设计方案</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2019/01/13/SonarQube代码质量管理平台安装和分析maven项目/">
+        <span class="next-text nav-default">SonarQube代码质量管理平台安装和分析maven项目</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

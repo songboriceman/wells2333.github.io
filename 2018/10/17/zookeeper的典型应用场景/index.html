@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="zookeeper的典型应用场景"><meta name="keywords" content="后端, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2018/10/17/zookeeper的典型应用场景/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"appid":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","appkey":"C6cI5nHo4mM7bfXQOfS8fC9q","comment":true,"timer":true},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>zookeeper的典型应用场景 - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">zookeeper的典型应用场景
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-10-17
+        </span><span class="post-category">
+            <a href="/categories/后端/">后端</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、数据发布-订阅"><span class="toc-text">一、数据发布/订阅</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、负载均衡"><span class="toc-text">二、负载均衡</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、命名服务"><span class="toc-text">三、命名服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、分布式协调-通知"><span class="toc-text">四、分布式协调/通知</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、集群管理"><span class="toc-text">五、集群管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、Master选举"><span class="toc-text">六、Master选举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、分布式锁"><span class="toc-text">七、分布式锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#排他锁"><span class="toc-text">排他锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#共享锁"><span class="toc-text">共享锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#羊群效应"><span class="toc-text">羊群效应</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#八、分布式队列"><span class="toc-text">八、分布式队列</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>《从Paxos到zookeeper分布式一致性原理与实践》之–zookeeper的典型应用场景</p>
+<p>zookeeper的典型应用场景有：数据发布/订阅、负载均衡、命名服务、分布式协调/通知、集群管理、Master选举、分布式锁、分布式队列</p>
+<a id="more"></a>
+<h3 id="一、数据发布-订阅"><a href="#一、数据发布-订阅" class="headerlink" title="一、数据发布/订阅"></a>一、数据发布/订阅</h3><p>数据的发布、订阅即所谓的配置中心，将数据发布到zookeeper一个或一系列节点上，供订阅者订阅，达到动态获取数据的目的</p>
+<p>发布、订阅有两种设计，分别是推模式和拉模式</p>
+<p>推模式：服务端主动发送更新数据到订阅的客户端</p>
+<p>拉模式：客户端主动发起请求来获取最新的数据，通常是定时轮询</p>
+<p>zookeeper采用推拉结合的方式：客户端向服务端注册需要关注的节点，当节点数据变化时，服务端发送watcher事件，客户端收到消息后再主动获取最新的数据</p>
+<p>全局配置信息的特性：</p>
+<ul>
+<li>数据量小</li>
+<li>数据运行时动态变化</li>
+<li>集群中各机器共享，配置一致</li>
+</ul>
+<p>例子：数据配置</p>
+<p>用一个节点存放数据库配置信息，每台机器启动时获取配置信息，并注册watcher，当数据变化时客户端再获取数据</p>
+<h3 id="二、负载均衡"><a href="#二、负载均衡" class="headerlink" title="二、负载均衡"></a>二、负载均衡</h3><p>定义：对计算机、网络连接、CPU、磁盘驱动或其他资源进行分配负载，以达到优化资源利用、最大化吞吐率、最小化响应时间和避免过载的目的</p>
+<p>通常分为硬件和软件负载均衡两类</p>
+<p>一种动态的DNS服务 DNS是域名系统的缩写（Domain Name System） 可以看做是超大规模的分布式映射表，用于将域名和IP进行一一映射，方便通过域名访问互联网站点</p>
+<h3 id="三、命名服务"><a href="#三、命名服务" class="headerlink" title="三、命名服务"></a>三、命名服务</h3><p>通过使用命名服务，客户端应用能够根据指定的名字获取资源实体、服务地址和提供者信息等</p>
+<p>JNDI就是一种典型的命名服务，JNDI是java命名与目录接口的缩写（java Naming and Directory Interface）</p>
+<p>全局唯一id，最易想到uuid，uuid是通用唯一识别码的缩写（universally Unique Identifier），最典型的实现就是GUID（Globally Unique Identifier，全局唯一标识符）</p>
+<p>一个标准的UUid包含32位字符和4个短线的字符串</p>
+<p>uuid的缺点：</p>
+<ul>
+<li>长度过长，意味着需要更多空间存储</li>
+<li>含义不明，字面上看不出任何其表达的含义，影响调试效率</li>
+<li>利用zookeeper API接口可以创建顺序节点，并返回节点的完整名字的特性，可以生成全局唯一id</li>
+</ul>
+<h3 id="四、分布式协调-通知"><a href="#四、分布式协调-通知" class="headerlink" title="四、分布式协调/通知"></a>四、分布式协调/通知</h3><p>通过注册watcher，监听节点数据变化实现</p>
+<h3 id="五、集群管理"><a href="#五、集群管理" class="headerlink" title="五、集群管理"></a>五、集群管理</h3><p>集群管理包括集群监控和集群控制</p>
+<p>分布式日志收集系统</p>
+<p>在线云主机管理</p>
+<h3 id="六、Master选举"><a href="#六、Master选举" class="headerlink" title="六、Master选举"></a>六、Master选举</h3><p>在分布式式系统中，master用来协调集群中的其它系统单元，具有对分布式系统状态变更的决定权</p>
+<p>广告投放系统后台</p>
+<h3 id="七、分布式锁"><a href="#七、分布式锁" class="headerlink" title="七、分布式锁"></a>七、分布式锁</h3><p>以前可以依赖关系型数据库固有的排他性实现不同的进程互斥，如行锁、表锁</p>
+<h4 id="排他锁"><a href="#排他锁" class="headerlink" title="排他锁"></a>排他锁</h4><p>又称为写锁和独占锁，在加锁期间，其它事务不能对这个数据对象进行任何其它类型的操作</p>
+<p>定义锁，java中是synchronized机制和ReentrantLock，zookeeper使用节点代表一个锁</p>
+<p>获取锁，调用create接口，创建临时节点，最终只有一个客户端创建成功，就认为该客户端获取了锁，没获取锁的客户端注册watcher监听</p>
+<p>释放锁，获取到锁的客户端宕机或客户端主动删除临时节点都会释放锁</p>
+<h4 id="共享锁"><a href="#共享锁" class="headerlink" title="共享锁"></a>共享锁</h4><p>又称为读锁，若给数据加了共享锁，当前事务只能对数据进行读操作，其它事务也只能对数据进行加共享锁，直到该数据的所有共享锁被释放</p>
+<p>定义锁，同样创建临时节点代表锁，但应该是临时顺序的节点</p>
+<p>获取锁，直接在锁下创建临时顺序节点，如果是读请求，加读的标志，写请求则加写标志</p>
+<p>判断读写顺序</p>
+<pre><code>1. 创建完节点后，获取锁下的所有子节点，并对该节点注册子节点变更的watcher监听
+
+2. 确定自己的节点序号在所有子节点中的顺序
+
+3. 对于读请求：
+
+    如果没有比自己序号小的节点，或是所有比自己序号小的子节点都是读请求，那么表明自己已经成功获取到共享锁，开始执行读逻辑
+
+    对于写请求：如果自己不是最小的子节点，进入等待
+
+4. 接收到watcher通知后，重复步骤1
+</code></pre><p>释放锁，与排他锁一致</p>
+<h4 id="羊群效应"><a href="#羊群效应" class="headerlink" title="羊群效应"></a>羊群效应</h4><p>集群规模较大时，服务端会产生大量的watcher通知，改进后的分布式锁实现</p>
+<pre><code>1. 客户端create临时顺序节点
+
+2. 客户端调用getChildren获取已创建的子节点列表，但不注册watcher
+
+3. 如无法获取共享锁，那么调用exist对比自己小的那个节点注册watcher
+
+    读请求：向比自己序号小的最后一个写请求节点注册watcher
+
+    写请求：向比自己序号小的最后一个节点注册watcher
+
+4. 等待watcher，继续进入步骤2
+</code></pre><h3 id="八、分布式队列"><a href="#八、分布式队列" class="headerlink" title="八、分布式队列"></a>八、分布式队列</h3><p>FIFO：先进先出</p>
+<p>getChildren获取队列的所有节点</p>
+<p>确定自己的节点序号在所有子节点的顺序</p>
+<p>如果不是序号最小，进入等待，同时向比自己序号小的最后一个节点注册watcher</p>
+<p>接收watcher通知，重复步骤1</p>
+<p>Barrier：分布式屏障</p>
+<p>应用于大规模并行计算：最终的合并计算需要基于多个并行计算的子结果来进行</p>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2018/10/17/zookeeper的典型应用场景/">http://ehedgehog.com/2018/10/17/zookeeper的典型应用场景/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/后端/">后端</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2018/11/03/微服务下的权限控制/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">微服务下的权限控制</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/09/24/多线程切割文件/">
+        <span class="next-text nav-default">多线程切割文件</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>

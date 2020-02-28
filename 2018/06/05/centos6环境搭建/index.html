@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="centos6环境搭建"><meta name="keywords" content="后端, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2018/06/05/centos6环境搭建/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script>
+  window.config = {"leancloud":{"appid":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","appkey":"C6cI5nHo4mM7bfXQOfS8fC9q","comment":true,"timer":true},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>centos6环境搭建 - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">centos6环境搭建
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-06-05
+        </span><span class="post-category">
+            <a href="/categories/后端/">后端</a>
+            </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装jdk"><span class="toc-text">安装jdk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装mysql"><span class="toc-text">安装mysql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装tomcat"><span class="toc-text">安装tomcat</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><p>centos6系统环境搭建，包括安装jdk、mysql、tomcat等。</p>
+<a id="more"></a>
+<h3 id="安装jdk"><a href="#安装jdk" class="headerlink" title="安装jdk"></a>安装jdk</h3><p>检查是否已经安装jdk：rpm -qa | grep java</p>
+<p>卸载系统自带jdk：rpm -qa | grep java | xargs rpm -e –nodeps</p>
+<p>下载jdk：</p>
+<pre><code>wget --no-cookie --header &quot;Cookie: oraclelicense=accept-securebackup-cookie&quot; http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm?AuthParam=1515326179_35a6fe79c9e9d731cead18775e21ee01 -O jdk-8u151-linux-x64.rpm
+</code></pre><p>安装jdK：rpm -ivh jdk-8u151-linux-x64.rpm</p>
+<p>检查：rpm -qa | grep java</p>
+<p>java -version</p>
+<h3 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h3><p>卸载旧的mysql：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rpm –qa | grep -i mysql</span><br><span class="line"></span><br><span class="line">yum remove mysql mysql-server mysql-libs compat-mysql51</span><br><span class="line"></span><br><span class="line">rm -rf /var/lib/mysql</span><br><span class="line"></span><br><span class="line">rm /etc/my.cnf</span><br><span class="line"></span><br><span class="line">rpm -qa|grep mysql</span><br></pre></td></tr></table></figure>
+<p>先安装mysql的repo源</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm</span><br><span class="line"></span><br><span class="line">rpm -ivh mysql-community-release-el7-5.noarch.rpm</span><br></pre></td></tr></table></figure>
+<p>安装mysql：</p>
+<pre><code>yum -y install mysql-server
+</code></pre><p>设置开机启动：</p>
+<pre><code>chkconfig mysqld on
+</code></pre><p>启动mysql服务：</p>
+<pre><code>service mysqld start
+</code></pre><p>root用户登录：</p>
+<pre><code>mysql -u root
+</code></pre><p>设置密码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">set password for root@localhost=password('tangyi');</span><br><span class="line"></span><br><span class="line">exit;</span><br><span class="line"></span><br><span class="line">mysql -u root -p </span><br><span class="line"></span><br><span class="line">tangyi</span><br></pre></td></tr></table></figure>
+<p>开启远程登录权限：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'root'</span>@<span class="string">'%'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'tangyi'</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></table></figure>
+<p>后台启动jar：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">nohup java -jar xxx.jar &amp;</span><br><span class="line"></span><br><span class="line">或：</span><br><span class="line"></span><br><span class="line">yum <span class="keyword">install</span> screen</span><br><span class="line"></span><br><span class="line">screen -S hexo <span class="comment"># hexo为窗口名称</span></span><br><span class="line"></span><br><span class="line">screen -ls</span><br><span class="line"></span><br><span class="line">screen -r xxx</span><br></pre></td></tr></table></figure>
+<p>查看后台进程号：</p>
+<pre><code>ps -ef |grep java
+</code></pre><p>停止命令：</p>
+<pre><code>kill -9 10503
+</code></pre><p>参考</p>
+<pre><code>http://blog.csdn.net/xlgen157387/article/details/49964557
+</code></pre><h3 id="安装tomcat"><a href="#安装tomcat" class="headerlink" title="安装tomcat"></a>安装tomcat</h3><p>下载tomcat：</p>
+<pre><code>wget https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v9.0.2/bin/apache-tomcat-9.0.2.tar.gz
+</code></pre><p>解压：tar -zxvf apache-tomcat-9.0.2.tar.gz</p>
+<p>启动tomcat：./catalina.sh start</p>
+<p>开启防火墙：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/iptables</span><br><span class="line"></span><br><span class="line">-A INPUT -m state <span class="comment">--state NEW -m tcp -p tcp --dport 8080 -j ACCEPT</span></span><br><span class="line"></span><br><span class="line">/etc/init.d/iptables restart</span><br></pre></td></tr></table></figure>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2018/06/05/centos6环境搭建/">http://ehedgehog.com/2018/06/05/centos6环境搭建/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/后端/">后端</a>
+            </div>
+        
+        <nav class="post-nav"><a class="prev" href="/2018/06/05/String源码/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">String源码</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    <a class="next" href="/2018/06/03/spring boot2.0集成dubbo/">
+        <span class="next-text nav-default">spring boot2.0集成dubbo</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
