@@ -71,6 +71,9 @@
       </a><a href="/categories/">
         <li class="mobile-menu-item">分类
           </li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于
+          </li>
       </a></ul>
 </nav>
 <div class="container" id="mobile-panel">
@@ -96,6 +99,11 @@
       <li class="menu-item">
           <a class="menu-item-link" href="/categories/">
             分类
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/about/">
+            关于
             </a>
         </li>
       </ul></nav>
@@ -128,15 +136,15 @@
   </div><div class="post-content"><p>　　主要介绍基于docker安装FastDfs，包括tracker、storage、Nginx，注意这只是用来搭建开发测试环境，不可用于生产环境。</p>
 <a id="more"></a>
 <h2 id="1-拉镜像"><a href="#1-拉镜像" class="headerlink" title="1 拉镜像"></a>1 拉镜像</h2><p>使用的镜像是<code>morunchang/fastdfs</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docker pull morunchang/fastdfs</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker pull morunchang/fastdfs</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h2 id="2-运行镜像"><a href="#2-运行镜像" class="headerlink" title="2 运行镜像"></a>2 运行镜像</h2><p>运行tracker：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docker run -d --name tracker --net=host morunchang/fastdfs sh tracker.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker run -d --name tracker --net=host morunchang/fastdfs sh tracker.sh</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>运行storage，指定tracker的IP、组名：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docker run -d --name storage --net=host -e TRACKER_IP=172.24.42.48:22122 -e GROUP_NAME=group1 morunchang/fastdfs sh storage.sh  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="3-修改Nginx配置"><a href="#3-修改Nginx配置" class="headerlink" title="3 修改Nginx配置"></a>3 修改Nginx配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docker exec -it storage  /bin/bash</span><br><span class="line"></span><br><span class="line">cd data</span><br><span class="line"></span><br><span class="line">vi /data/nginx/conf/nginx.conf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker run -d --name storage --net=host -e TRACKER_IP=172.24.42.48:22122 -e GROUP_NAME=group1 morunchang/fastdfs sh storage.sh  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="3-修改Nginx配置"><a href="#3-修改Nginx配置" class="headerlink" title="3 修改Nginx配置"></a>3 修改Nginx配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker exec -it storage  /bin/bash</span><br><span class="line"></span><br><span class="line">cd data</span><br><span class="line"></span><br><span class="line">$ vi /data/nginx/conf/nginx.conf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>增加如下配置：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">location /group1/M00 &#123;</span><br><span class="line"></span><br><span class="line">    proxy_next_upstream http_502 http_504 error timeout invalid_header;</span><br><span class="line"></span><br><span class="line">    proxy_cache http-cache;</span><br><span class="line"></span><br><span class="line">    proxy_cache_valid 20030412h;</span><br><span class="line"></span><br><span class="line">    proxy_cache_key $uri$is_args$args;</span><br><span class="line"></span><br><span class="line">    proxy_pass http://fdfs_group1;</span><br><span class="line"></span><br><span class="line">    expires 30d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="4-重启容器"><a href="#4-重启容器" class="headerlink" title="4 重启容器"></a>4 重启容器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">docker restart tracker</span><br><span class="line"></span><br><span class="line">docker restart storage</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="4-重启容器"><a href="#4-重启容器" class="headerlink" title="4 重启容器"></a>4 重启容器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ docker restart tracker</span><br><span class="line"></span><br><span class="line">$ docker restart storage</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
       </div>
       <div class="post-copyright">
