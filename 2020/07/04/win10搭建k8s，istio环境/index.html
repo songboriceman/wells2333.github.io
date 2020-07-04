@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+<meta name="description" content="win10搭建k8s，istio环境"><meta name="keywords" content="k8s, istio, EHedgehog"><link rel="alternate" href="/atom.xml" title="EHedgehog"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.11.0">
+<link rel="canonical" href="http://ehedgehog.com/2020/07/04/win10搭建k8s，istio环境/">
+
+<link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.11.0">
+
+<script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+<script src="//cdn1.lncld.net/static/js/3.1.1/av-min.js"></script>
+  <script id="leancloud">
+    AV.init({
+      appId: "GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz",
+      appKey: "C6cI5nHo4mM7bfXQOfS8fC9q"
+    });
+  </script><script>
+  window.config = {"leancloud":{"app_id":"GxHi3mb99YACgDcdJnwQ85QW-gzGzoHsz","app_key":"C6cI5nHo4mM7bfXQOfS8fC9q"},"toc":true,"fancybox":true,"pjax":"","latex":false};
+</script>
+
+    <title>win10搭建k8s，istio环境 - EHedgehog</title>
+  <link rel="alternate" href="/atom.xml" title="EHedgehog" type="application/atom+xml">
+</head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">EHedgehog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list"><a href="/">
+        <li class="mobile-menu-item">首页
+          </li>
+      </a><a href="/archives/">
+        <li class="mobile-menu-item">归档
+          </li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签
+          </li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类
+          </li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">关于
+          </li>
+      </a></ul>
+</nav>
+<div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">EHedgehog</a>
+</div>
+
+<nav class="site-navbar"><ul id="menu" class="menu"><li class="menu-item">
+          <a class="menu-item-link" href="/">
+            首页
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            归档
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/tags/">
+            标签
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/categories/">
+            分类
+            </a>
+        </li>
+      <li class="menu-item">
+          <a class="menu-item-link" href="/about/">
+            关于
+            </a>
+        </li>
+      </ul></nav>
+</header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content"><article class="post">
+    <header class="post-header">
+      <h1 class="post-title">win10搭建k8s，istio环境
+        </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2020-07-04
+        </span><span class="post-category">
+            <a href="/categories/k8s/">k8s</a>
+            </span>
+        <span class="post-visits" data-url="/2020/07/04/win10搭建k8s，istio环境/" data-title="win10搭建k8s，istio环境">
+          阅读次数 0
+        </span>
+        </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置说明"><span class="toc-text">配置说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#环境搭建"><span class="toc-text">环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装k8s"><span class="toc-text">安装k8s</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装istio"><span class="toc-text">安装istio</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#构建镜像"><span class="toc-text">构建镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#部署demo"><span class="toc-text">部署demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#取消部署"><span class="toc-text">取消部署</span></a></li></ol>
+    </div>
+  </div><div class="post-content"><h2 id="配置说明"><a href="#配置说明" class="headerlink" title="配置说明"></a>配置说明</h2><ul>
+<li>系统：win10</li>
+<li>内存：16G</li>
+<li>docker desktop：2.3.0.3</li>
+<li>kubernetes：v1.16.5</li>
+<li>istio：1.6.4</li>
+</ul>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="安装k8s"><a href="#安装k8s" class="headerlink" title="安装k8s"></a>安装k8s</h3><p>视频教程：<a href="https://www.bilibili.com/video/av96585506" target="_blank" rel="noopener">https://www.bilibili.com/video/av96585506</a></p>
+<p>下载安装包：<a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener">https://www.docker.com/products/docker-desktop</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/AliyunContainerService/k8s-for-docker-desktop</span><br></pre></td></tr></table></figure>
+<p>获取登录token：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$TOKEN=((kubectl -n kube-system describe secret default | Select-String &quot;token:&quot;) -split &quot; +&quot;)[1]</span><br><span class="line">kubectl config set-credentials docker-for-desktop --token=&quot;$&#123;TOKEN&#125;&quot;</span><br><span class="line">echo $TOKEN</span><br><span class="line">kubectl proxy</span><br></pre></td></tr></table></figure>
+<p>访问：<a href="http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/" target="_blank" rel="noopener">http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</a></p>
+<h3 id="安装istio"><a href="#安装istio" class="headerlink" title="安装istio"></a>安装istio</h3><p>安装istio：</p>
+<p>下载istio-1.6.4-win.zip，添加环境变量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">istioctl install --set profile=demo</span><br></pre></td></tr></table></figure>
+<p>启用kiali：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">istioctl dashboard kiali</span><br></pre></td></tr></table></figure>
+<p>访问：<a href="http://localhost:2978/kiali" target="_blank" rel="noopener">http://localhost:2978/kiali</a></p>
+<p>其它监控可以通过dashboard命令查看：<code>istioctl dashboard</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">istioctl dashboard </span><br></pre></td></tr></table></figure>
+<p>域名访问：<code>${serviceName}.${namespace}.svc.cluster.local</code></p>
+<h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><p>打包和构建镜像：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\gradlew build&amp;&amp;docker-compose build</span><br></pre></td></tr></table></figure>
+<h2 id="部署demo"><a href="#部署demo" class="headerlink" title="部署demo"></a>部署demo</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">kubectl create namespace sg-exam</span><br><span class="line"></span><br><span class="line">kubectl config set-context $(kubectl config current-context) --namespace=sg-exam</span><br><span class="line"></span><br><span class="line">kubectl create configmap config-repo-auth-service      --from-file=config-repo/application.yml --from-file=config-repo/auth-service.yml --save-config</span><br><span class="line">kubectl create configmap config-repo-exam-service      --from-file=config-repo/application.yml --from-file=config-repo/exam-service.yml --save-config</span><br><span class="line">kubectl create configmap config-repo-msc-service      --from-file=config-repo/application.yml --from-file=config-repo/msc-service.yml --save-config</span><br><span class="line">kubectl create configmap config-repo-user-service      --from-file=config-repo/application.yml --from-file=config-repo/user-service.yml --save-config</span><br><span class="line"></span><br><span class="line">kubectl create secret generic config-server-secrets --from-literal=ENCRYPT_KEY=my-very-secure-encrypt-key --from-literal=SPRING_SECURITY_USER_NAME=dev-usr --from-literal=SPRING_SECURITY_USER_PASSWORD=dev-pwd --save-config</span><br><span class="line"></span><br><span class="line">kubectl label namespace sg-exam istio-injection=enabled</span><br><span class="line"></span><br><span class="line">kubectl -n istio-system get secret istio-ingressgateway-certs</span><br><span class="line"></span><br><span class="line">kubectl create -n istio-system secret tls istio-ingressgateway-certs --key kubernetes/cert/tls.key --cert kubernetes/cert/tls.crt</span><br><span class="line"></span><br><span class="line">kubectl create secret tls tls-certificate --key kubernetes/cert/tls.key --cert kubernetes/cert/tls.crt</span><br><span class="line"></span><br><span class="line">kubectl apply -k kubernetes/services/overlays/dev</span><br><span class="line"></span><br><span class="line">kubectl apply -k kubernetes/services/base/dev</span><br><span class="line"></span><br><span class="line">kubectl get svc istio-ingressgateway -n istio-system</span><br></pre></td></tr></table></figure>
+<h2 id="取消部署"><a href="#取消部署" class="headerlink" title="取消部署"></a>取消部署</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl delete namespace sg-exam</span><br></pre></td></tr></table></figure>
+
+      </div>
+      <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://ehedgehog.com">tangyi</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://ehedgehog.com/2020/07/04/win10搭建k8s，istio环境/">http://ehedgehog.com/2020/07/04/win10搭建k8s，istio环境/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+      <footer class="post-footer">
+        <div class="post-tags">
+            <a href="/tags/k8s/">k8s</a>
+            <a href="/tags/istio/">istio</a>
+            </div>
+        
+        <nav class="post-nav"><a class="next" href="/2020/03/07/macbook安装minikube/">
+        <span class="next-text nav-default">macbook安装minikube</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    </nav></footer>
+    </article></div><div class="comments" id="comments"></div></div>
+      </main>
+
+      <footer id="footer" class="footer"><div class="social-links"><a href="mailto:1633736729@qq.com" class="iconfont icon-email" title="email"></a>
+        <a href="https://gitee.com/wells2333" class="iconfont icon-github" title="github"></a>
+        <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    </div><div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">&copy;2018 - 2020<span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">tangyi</span>
+  </span>
+</div>
+</footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div><script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/src/even.js?v=2.11.0"></script>
+</body>
+</html>
